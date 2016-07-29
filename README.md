@@ -2,6 +2,8 @@
 
 Simple scraper for www.release.tdnet.info
 
+[![Build Status](https://travis-ci.org/ka2n/tdnet-client-ruby.svg?branch=master)](https://travis-ci.org/ka2n/tdnet-client-ruby)
+
 ## Installation
 
 Add this line to your application's Gemfile:
