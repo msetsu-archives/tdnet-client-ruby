@@ -84,7 +84,7 @@ module TDnet
 
       def conv_time(entry, key)
         date = @meta[:date]
-        time = Time.strptime(entry[key], '%H:%M')
+        time = strptime_as_tokyo(entry[key], '%H:%M')
         entry[key] = Time.new(date.year, date.month, date.day, time.hour, time.min, time.sec, time.utc_offset)
         entry
       end
@@ -95,6 +95,13 @@ module TDnet
 
         entry[key] = URI.join(@url, path).to_s
         entry
+      end
+
+      def strptime_as_tokyo(date, format)
+        time = Time.strptime(date, format)
+        utc_offset = time.utc_offset
+        zone_offset = 32400
+        time.localtime(zone_offset) + utc_offset - zone_offset
       end
     end
   end
