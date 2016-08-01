@@ -32,35 +32,48 @@ module TDnet
         line_sel = '//*[@id="main-list-table"]//tr'
 
         meta_selectors = {
-          date: ['//*[@id="kaiji-date-1"]', :conv_date],
-          page: ['//*[@class="pager-O"]', :conv_page],
-          max_page: ['(//*[@class="pager-M" or @class="pager-O"])[last()]', :conv_page],
+          date: ['//*[@id="kaiji-date-1"]', :as_text, :conv_date],
+          page: ['//*[@class="pager-O"]', :as_text, :conv_page],
+          max_page: ['(//*[@class="kaijiSum"]/text())[last()]', :as_text, :conv_max_page],
         }
 
         selectors = {
-           time: ['./*[contains(@class, "kjTime")]', :conv_time],
-           code: ['./*[contains(@class, "kjCode")]'],
-           name: ['./*[contains(@class, "kjName")]'],
-          title: ['./*[contains(@class, "kjTitle")]', :conv_classify],
-            pdf: ['./*[contains(@class, "kjTitle")]//a/@href', :conv_absolute_url],
-           xbrl: ['./*[contains(@class, "kjXbrl")]//a/@href', :conv_absolute_url]
+           time: ['./*[contains(@class, "kjTime")]', :as_text, :conv_time],
+           code: ['./*[contains(@class, "kjCode")]', :as_text],
+           name: ['./*[contains(@class, "kjName")]', :as_text],
+          title: ['./*[contains(@class, "kjTitle")]/a', :as_text, :conv_classify],
+            pdf: ['./*[contains(@class, "kjTitle")]//a/@href', :as_text, :conv_absolute_url],
+           xbrl: ['./*[contains(@class, "kjXbrl")]//a/@href', :as_text, :conv_absolute_url],
+           changed: ['boolean(descendant-or-self::*[contains(@class, "hyodaiUpd")])', :as_value],
+           deleted: ['boolean(descendant-or-self::*[contains(@class, "hyodaiDel")])', :as_value],
         }
 
         @meta = meta_selectors.reduce({}) do |r, (key, sel)|
-          xpath, converter = sel
-          r[key] = doc.xpath(xpath).first&.text
+          xpath, getter, converter = sel
+          r[key] = doc.xpath(xpath)
+          r = self.send(getter, r, key)
           r = self.send(converter, r, key) if converter
           r
         end
 
         @entries = doc.xpath(line_sel).map do |line|
           selectors.reduce({}) do |r, (key, sel)|
-            xpath, converter = sel
-            r[key] = line.xpath(xpath).first&.text
+            xpath, getter, converter = sel
+            r[key] = line.xpath(xpath)
+            r = self.send(getter, r, key)
             r = self.send(converter, r, key) if converter
             r
           end
         end
+      end
+
+      def as_text(entry, key)
+        entry[key] = entry[key]&.first&.text
+        entry
+      end
+
+      def as_value(entry, _key)
+        entry # noop
       end
 
       def conv_classify(entry, key)
@@ -69,6 +82,19 @@ module TDnet
                          else
                            :other
                        end
+        entry
+      end
+
+      def conv_max_page(entry, key)
+        if (m = entry[key].match(/(?<from>\d+)[^\d]+(?<to>\d+)件[^\d]+全(?<all>\d+)件/))
+          from = m['from'].to_i
+          to = m['to'].to_i
+          all = m['all'].to_i
+          page = (1.0 * all / ((to + 1) - from)).ceil
+          entry[key] = page
+        else
+          entry[key] = 0
+        end
         entry
       end
 
