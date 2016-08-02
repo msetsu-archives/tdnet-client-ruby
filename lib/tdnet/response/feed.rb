@@ -89,7 +89,7 @@ module TDnet
         if (m = entry[key].match(/全(?<all>\d+)件/))
           all = m['all'].to_i
           page = (1.0 * all / 100).ceil
-          entry[key] = page
+          entry[key] = page >= 1 ? page - 1 : 0
         else
           entry[key] = 0
         end
