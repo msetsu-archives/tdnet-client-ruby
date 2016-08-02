@@ -13,7 +13,7 @@ class TDnet::ClientTest < Minitest::Test
       refute_nil feeds
 
       assert_equal 100, feeds.count
-      assert_equal 11, feeds.meta[:max_page]
+      assert_equal 10, feeds.meta[:max_page]
 
       feed = feeds.each.to_a[0]
       assert_equal '64730', feed[:code]
