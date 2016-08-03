@@ -86,7 +86,9 @@ module TDnet
       end
 
       def conv_max_page(entry, key)
-        if (m = entry[key].match(/全(?<all>\d+)件/))
+        if entry[key].nil?
+          entry[key] = 0
+        elsif (m = entry[key].match(/全(?<all>\d+)件/))
           all = m['all'].to_i
           page = (1.0 * all / 100).ceil
           entry[key] = page >= 1 ? page - 1 : 0
@@ -97,7 +99,11 @@ module TDnet
       end
 
       def conv_page(entry, key)
-        entry[key] = entry[key].to_i - 1
+        if entry[key].nil?
+          entry[key] = 0
+        else
+          entry[key] = entry[key].to_i - 1
+        end
         entry
       end
 
