@@ -50,6 +50,17 @@ class TDnet::ClientTest < Minitest::Test
     end
   end
 
+  def test_no_entry_day
+    conn = stubbed_conn('/inbs/I_list_001_20160709.html', test_resource('I_list_001_20160709.html'))
+    client = TDnet::Client.new
+    client.stub :agent, conn do
+      feeds = client.feeds(Date.new(2016, 7, 9), page: 0)
+      refute_nil feeds
+      assert_equal 0, feeds.meta[:max_page]
+      assert_equal 0, feeds.meta[:page]
+    end
+  end
+
   protected
 
   def stubbed_conn(path, file)
