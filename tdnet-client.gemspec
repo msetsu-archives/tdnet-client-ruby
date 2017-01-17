@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = 'TDnet client for Ruby'
   spec.description   = 'TDnet client for Ruby'
-  spec.homepage      = 'https://github.com/ka2n/tdnet-client-ruby'
+  spec.homepage      = 'https://github.com/msetsu/tdnet-client-ruby'
 
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|
     f.match(%r{^(test|spec|features)/})

@@ -2,8 +2,6 @@
 
 Simple scraper for www.release.tdnet.info
 
-[![Build Status](https://travis-ci.org/ka2n/tdnet-client-ruby.svg?branch=master)](https://travis-ci.org/ka2n/tdnet-client-ruby)
-
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -43,5 +41,5 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/ka2n/tdnet-client-ruby.
+Bug reports and pull requests are welcome on GitHub at https://github.com/msetsu/tdnet-client-ruby.
 
