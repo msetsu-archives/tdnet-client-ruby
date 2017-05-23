@@ -6,6 +6,7 @@ module TDnet
     def agent
       @agent ||= Faraday.new(:url => 'https://www.release.tdnet.info/') do |faraday|
         faraday.request  :url_encoded             # form-encode POST params
+        faraday.response :raise_error
         faraday.response :logger, logger if logger
         faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
       end
