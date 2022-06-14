@@ -19,7 +19,7 @@ module TDnet
       resp = agent.get path, options
       return unless resp.success?
       resp_ = resp.to_hash
-      TDnet::Response::Feed.new(resp_[:body], resp_[:url].to_s)
+      TDnet::Response::Feed.new(resp_[:body], resp.env.url)
     end
   end
 end
